@@ -12,16 +12,10 @@ jobs:
     steps:
       - name: Check out the repository
         uses: actions/checkout@v4
-
-      - name: Set up Rust toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
-
+        
       - name: Build the project
         run: cargo build --release
-
+        
       - name: Upload binary to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
