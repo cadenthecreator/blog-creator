@@ -13,13 +13,18 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@v4
         
-      - name: Build the project
-        run: cargo build --release
+      - uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release
+          
+      - name: Rename binary
+        run: mv target/release/Blog-Creator ${GITHUB_REPOSITORY##*/}-linux-x86_64
         
-      - name: Upload binary to GitHub Release
+      - name: Upload binary to GitHub release
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            target/release/<your-binary-name>
+            ${GITHUB_REPOSITORY##*/}-linux-x86_64
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
