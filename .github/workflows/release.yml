@@ -1,0 +1,30 @@
+name: Release Build
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    name: Build and Upload Binary
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Rust toolchain
+        uses: actions/setup-rust@v1
+        with:
+          rust-version: stable
+
+      - name: Build the project
+        run: cargo build --release
+
+      - name: Upload binary to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            target/release/<your-binary-name>
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
