@@ -5,18 +5,15 @@ use std::{
 };
 
 use chrono::{DateTime, Datelike, TimeZone, Timelike, Utc};
-use iced::{
-    Element, Length,
-    keyboard::{Key, Modifiers},
-    widget::{
-        Button, Image, TextEditor, column, container,
-        image::Handle,
-        markdown::{self, Style},
-        row, text,
-        text_editor::{Action, Content},
-        text_input,
-    },
-};
+use dark_light::Mode;
+use iced::{Element, Length, keyboard::{Key, Modifiers}, widget::{
+    Button, Image, TextEditor, column, container,
+    image::Handle,
+    markdown::{self, Style},
+    row, text,
+    text_editor::{Action, Content},
+    text_input,
+}, Theme};
 use iced::{Subscription, keyboard};
 use iced_aw::{
     TabBarPosition, Tabs, TimePicker,
@@ -314,6 +311,17 @@ fn meta_view(state: &Post) -> Element<'_, Message> {
 }
 
 impl Post {
+
+    fn theme(&self) -> Theme {
+        match dark_light::detect() {
+            Ok(t) => {match t {
+                Mode::Dark => {Theme::Dark}
+                Mode::Light => {Theme::Light}
+                Mode::Unspecified => {Theme::Dark}
+            }}
+            Err(_) => {Theme::Dark}
+        }
+    }
     fn update(&mut self, message: Message) {
         match message {
             Message::LinkClicked(url) => {
@@ -438,6 +446,7 @@ fn main() -> iced::Result {
     iced::application("Blog Creator", Post::update, Post::view)
         .subscription(subscription)
         .centered()
+        .theme(Post::theme)
         .font(iced_fonts::REQUIRED_FONT_BYTES)
         .run()
 }
